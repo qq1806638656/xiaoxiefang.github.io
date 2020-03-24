@@ -462,3 +462,57 @@ untl配置list可以被所有的bean引用
 	<bean id="p20" class="com.atguigu.pojo.Person" scope="singleton">
 		<property name="name" value="p20" />
 	</bean>
+## 1.8bean生命周期API
+
+### 1.8.1创建带有生命周期方法的bean
+
+	<!-- 
+		init-method配置初始化方法(bean对象创建之后)
+		destroy-method配置销毁方法（在spring容器关闭的时候,只对单例有效）
+	 -->
+	<bean id="p21" class="com.atguigu.pojo.Person" init-method="init" destroy-method="destroy" scope="singleton">
+		<property name="name" value="p21"/>
+	</bean>
+	
+### 1.8.2后置处理器BeanPostProcessor
+
+后置处理器，可以在bean对象的初始化方法前/后，做一些工作。  
+
+后置处理器使用步骤：
+&emsp;&emsp; 1、编写一个类去实现BeanPostProcessor接口
+&emsp;&emsp; 2、到Spring容器配置文件中配置
+
+	java
+	public class MyBeanPostProcessor implements BeanPostProcessor {
+		/**
+		 * 初始化方法之后调用
+		 */
+		@Override
+		public Object postProcessAfterInitialization(Object bean, String id) throws BeansException {
+			System.out.println("初始化方法之后。正在初始化的对象bean->" + bean + ",正在初始化对象的id值->" + id);
+
+			if ("p21".equals(id)) {
+				Person person = (Person) bean;
+				person.setName("这是我给的值");
+			}
+
+			return bean;
+		}
+
+		/**
+		 * 初始化方法之前调用
+		 */
+		@Override
+		public Object postProcessBeforeInitialization(Object bean, String id) throws BeansException {
+			System.out.println("初始化方法之前。正在初始化的对象bean->" + bean + ",正在初始化对象的id值->" + id);
+			return bean;
+		}
+
+	}
+手动分割
+
+	<bean id="p21" class="com.atguigu.pojo.Person" init-method="init" destroy-method="destroy" scope="singleton">
+		<property name="name" value="p21"/>
+	</bean>
+	<!-- 配置自定义的后置处理器 -->
+	<bean class="com.atguigu.postprocessor.MyBeanPostProcessor" />

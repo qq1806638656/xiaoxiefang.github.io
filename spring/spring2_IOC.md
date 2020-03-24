@@ -477,6 +477,7 @@ untl配置list可以被所有的bean引用
 ### 1.8.2后置处理器BeanPostProcessor
 
 后置处理器，可以在bean对象的初始化方法前/后，做一些工作。  
+后置处理器对所有的bean都起作用
 
 后置处理器使用步骤：
 &emsp;&emsp; 1、编写一个类去实现BeanPostProcessor接口
